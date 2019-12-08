@@ -4,6 +4,7 @@ import (
 	"fmt"
 	_"os"
 )
+var tatol int = 0
 func main() {
 	var num int 
 	fmt.Println("please input a number that is four numbers")
@@ -25,16 +26,16 @@ func run(str int) int {
 
 func order(n []int,literal string) {
 	len := len(n)
-	for i := 0;i < len;i++ {
-		for j := i+1;i < len;j++ {
+	for i := 0;i < len-1;i++ {
+		for j := 0;j < len-1-1;j++ {
 			if "ASC" == literal {
-					if n[i] < n[j] {
-						swap(&n[i],&n[j])
-					}
+				if n[j] < n[j+1] {
+					swap(&n[j],&n[j])
+				}
 			}else if "DESC" == literal {
-					if n[i] > n[j] {
-						swap(&n[i],&n[j])
-					}
+				if n[j] < n[j+1] {
+					swap(&n[j],&n[j])
+				}
 			}
 		}
 	}
