@@ -39,3 +39,10 @@ func BinarySearch(checkSlice []int, findVal int) int {
 	}
 	return post
   }
+
+  func Swap(a,b *int) {
+	var c int
+	c = *a
+	*a = *b
+	*b = c
+ }

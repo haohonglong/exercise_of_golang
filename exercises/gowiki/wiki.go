@@ -9,7 +9,7 @@ import (
 	"regexp"
 )
 const (
-	path string = "./views"
+	ROOTPATH  = "./views"
 )
 type Page struct {
 	Title string
@@ -58,7 +58,7 @@ func saveHandler(w http.ResponseWriter, r *http.Request, title string) {
 	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
 //template.ParsefFiles 这个一定要设置路径，templates.ExecuteTemplate 是只要文件名go就自动会识别，但就是注意 不同的路径里面的文件名是不能重复的，否则会被覆盖，有冲突！
-var templates = template.Must(template.ParseFiles(path+"/edit.html", path+"/view.html"))
+var templates = template.Must(template.ParseFiles(ROOTPATH+"/edit.html", ROOTPATH+"/view.html"))
 
 func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 	err := templates.ExecuteTemplate(w, tmpl+".html", p)//这里绝对不能添加路径

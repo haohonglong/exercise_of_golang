@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	_"os"
+	"lib"
 )
 var tatol int = 0
 func main() {
@@ -30,20 +31,14 @@ func order(n []int,literal string) {
 		for j := 0;j < len-1-1;j++ {
 			if "ASC" == literal {
 				if n[j] < n[j+1] {
-					swap(&n[j],&n[j])
+					lib.Swap(&n[j],&n[j])
 				}
 			}else if "DESC" == literal {
 				if n[j] < n[j+1] {
-					swap(&n[j],&n[j])
+					lib.Swap(&n[j],&n[j])
 				}
 			}
 		}
 	}
 }
 
-func swap(a,b *int) {
-	var c int
-	c = *a
-	*a = *b
-	*b = c
-}
