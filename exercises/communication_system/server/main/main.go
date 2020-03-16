@@ -1,13 +1,9 @@
 package main
 
 import (
-	"io"
 	"log"
 	"net"
 	"fmt"
-	"encoding/json"
-	"encoding/binary"
-	"exercises/communication_system/common/message"
 	"console"
 	_"errors"
 )
@@ -113,43 +109,32 @@ import (
 
 //编写一个ServerProcessMes 函数,这里就相当于一个router
 //功能：根据客户端发送消息种类不同， 决定调用哪个函数来处理
-func serverProcessMes(conn net.Conn, mes *message.Message) (err error) {
-	switch mes.Type {
-		case message.LoginMesType:
-			err = serverProcessLogin(conn, mes)
-		case message.RegisterMesType:
+// func serverProcessMes(conn net.Conn, mes *message.Message) (err error) {
+// 	switch mes.Type {
+// 		case message.LoginMesType:
+// 			err = serverProcessLogin(conn, mes)
+// 		case message.RegisterMesType:
 		
-		default:
-			fmt.Printf("%s The type of message is not exist\n",console.Log())
+// 		default:
+// 			fmt.Printf("%s The type of message is not exist\n",console.Log())
 		
-	}
-	return
-}
+// 	}
+// 	return
+// }
 
-func handleConnection(c net.Conn) {
+func handleConnection(conn net.Conn) {
 	// Echo all incoming data.
 	// io.Copy(c, c)
 	// Shut down the connection.
-	defer c.Close()
+	defer conn.Close()
 	
-
-	for {
-		//这里我们将读取数据包，直接封装成一个函数readPkg(),返回Message, Err
-		mes, err := readPkg(c)
-		if err != nil {
-			if err == io.EOF {
-				fmt.Printf("%s 客户端退出了\n", console.Log())
-			}else {
-				fmt.Printf("%s readPkg err\n", console.Log(), err)
-			}
-			return
-			
-		}
-		err = serverProcessMes(c,&mes)
-		if err != nil {
-			return
-		}
-		
+	p := &Processor{
+		Conn : conn,
+	}
+	err := p.process2()
+	if err != nil {
+		fmt.Printf("%s 客户端和服务器通讯协程错误err= %s\n", console.Log(), err)
+		return
 	}
 }
 func main() {

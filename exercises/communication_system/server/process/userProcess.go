@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"encoding/json"
 	"exercises/communication_system/common/message"
+	"exercises/communication_system/server/utils"
 	"console"
 )
+type UserProcess struct {
+	Conn net.Conn
+}
+
 //用来处理登录的请求
-func serverProcessLogin(conn net.Conn, mes *message.Message) (err error) {
+func (this *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	//1.先从mes 中取出 mes.Data,并直接反序列化成LoginMes
 	var loginMes message.LoginMes
 	err = json.Unmarshal([]byte(mes.Data), &loginMes)
@@ -49,7 +54,10 @@ func serverProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 		return
 	}
 	//6.发送data, 将其封装到writePkg函数中
-	err = writePkg(conn,data)
+	tf := &utils.Transfer{
+		Conn : this.Conn,
+	}
+	err = tf.WritePkg(data)
 	
 
 	return
