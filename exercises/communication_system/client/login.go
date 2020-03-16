@@ -13,7 +13,7 @@ func login(userId int, userPwd string) (err error) {
 	conn, err := net.Dial("tcp", "0.0.0.0:2000")
 	
 	if err != nil {
-		fmt.Printf("%s client dial error=\n", helper.Line(), err)
+		fmt.Printf("%s client dial error=\n", helper.Log(), err)
 		return
 	}
 	defer conn.Close()
@@ -31,7 +31,7 @@ func login(userId int, userPwd string) (err error) {
 	//4.将loginMes序列化
 	data, err := json.Marshal(loginMes)
 	if err != nil {
-		fmt.Printf("%s json.Marshal err=\n", helper.Line(), err)
+		fmt.Printf("%s json.Marshal err=\n", helper.Log(), err)
 		return
 	}
 
@@ -42,7 +42,7 @@ func login(userId int, userPwd string) (err error) {
 
 	data, err = json.Marshal(mes)
 	if err != nil {
-		fmt.Printf("%s json.Marshal err=\n", helper.Line(), err)
+		fmt.Printf("%s json.Marshal err=\n", helper.Log(), err)
 		return
 	}
 
@@ -57,13 +57,13 @@ func login(userId int, userPwd string) (err error) {
 	//现在发送长度
 	n, err := conn.Write(buf[:4])
 	if n !=4 || err != nil {
-		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Line(), err)
+		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Log(), err)
 		return
 	}
 
 	_, err = conn.Write(data)
 	if err != nil {
-		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Line(), err)
+		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Log(), err)
 		return
 	}
 	// fmt.Println("休息一下哦。。。")
@@ -78,7 +78,7 @@ func login(userId int, userPwd string) (err error) {
 	
 	
 	if err != nil {
-		fmt.Printf("%s readPkg(conn) err=", helper.Line(), err)
+		fmt.Printf("%s readPkg(conn) err=", helper.Log(), err)
 		return
 	}
 	//将mes的Data部分反序列化成 LoginResMes
@@ -86,9 +86,9 @@ func login(userId int, userPwd string) (err error) {
 	err = json.Unmarshal([]byte(mes.Data),&loginResMes)
 	
 	if loginResMes.Code == 200 {
-		fmt.Printf("%s 登录成功\n", helper.Line())
+		fmt.Printf("%s 登录成功\n", helper.Log())
 	}else if loginResMes.Code == 500 {
-		fmt.Printf("%s err:%s", helper.Line(),loginResMes.Error)
+		fmt.Printf("%s err:%s", helper.Log(),loginResMes.Error)
 		return
 	}
 

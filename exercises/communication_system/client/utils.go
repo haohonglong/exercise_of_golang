@@ -10,7 +10,7 @@ import (
 )
 func readPkg(c net.Conn) (mes message.Message, err error) {
 	buf := make([]byte,8096)
-	fmt.Printf("%s 服务器在等待客户端%s 发送信息\n",helper.Line(), c.RemoteAddr().String())
+	fmt.Printf("%s 服务器在等待客户端%s 发送信息\n",helper.Log(), c.RemoteAddr().String())
 	//conn.Read 在conn没有被关闭情况下，才会被堵塞
 
 	_, err = c.Read(buf[:4])
@@ -28,7 +28,7 @@ func readPkg(c net.Conn) (mes message.Message, err error) {
 	//把pkgLen 反序列化成 -> message.Message
 	err = json.Unmarshal(buf[:pkgLen], &mes)
 	if err != nil {
-		fmt.Printf("%s json.Unmarshal err=\n", helper.Line(), err)
+		fmt.Printf("%s json.Unmarshal err=\n", helper.Log(), err)
 		return
 	}
 
@@ -44,13 +44,13 @@ func writePkg(conn net.Conn, data []byte) (err error) {
 	//现在发送长度给对方
 	n, err := conn.Write(buf[:4])
 	if n !=4 || err != nil {
-		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Line(), err)
+		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Log(), err)
 		return
 	}
 	//发送data本身
 	n, err = conn.Write(data)
 	if n != int(pkgLen) || err != nil {
-		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Line(), err)
+		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Log(), err)
 		return
 	}
 

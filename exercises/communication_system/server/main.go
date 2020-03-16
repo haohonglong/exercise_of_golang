@@ -13,7 +13,7 @@ import (
 )
 func readPkg(c net.Conn) (mes message.Message, err error) {
 	buf := make([]byte,8096)
-	fmt.Printf("%s 服务器在等待客户端%s 发送信息\n",helper.Line(), c.RemoteAddr().String())
+	fmt.Printf("%s 服务器在等待客户端%s 发送信息\n",helper.Log(), c.RemoteAddr().String())
 	//conn.Read 在conn没有被关闭情况下，才会被堵塞
 
 	_, err = c.Read(buf[:4])
@@ -31,7 +31,7 @@ func readPkg(c net.Conn) (mes message.Message, err error) {
 	//把pkgLen 反序列化成 -> message.Message
 	err = json.Unmarshal(buf[:pkgLen], &mes)
 	if err != nil {
-		fmt.Printf("%s json.Unmarshal err=\n", helper.Line(), err)
+		fmt.Printf("%s json.Unmarshal err=\n", helper.Log(), err)
 		return
 	}
 
@@ -44,16 +44,16 @@ func writePkg(conn net.Conn, data []byte) (err error) {
 	pkgLen = uint32(len(data))
 	var buf [4]byte
 	binary.BigEndian.PutUint32(buf[0:4], pkgLen)
-	//现在发送长度给对方
+	//现在发送长度给对方，看看是否发送的成功，如果成功就发送真正的数据内容
 	n, err := conn.Write(buf[:4])
 	if n !=4 || err != nil {
-		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Line(), err)
+		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Log(), err)
 		return
 	}
-	//发送data本身
+	//注意：这里是发送是真正的data数据
 	n, err = conn.Write(data)
 	if n != int(pkgLen) || err != nil {
-		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Line(), err)
+		fmt.Printf("%s conn.Write(bytes) error:%s\n", helper.Log(), err)
 		return
 	}
 
@@ -90,7 +90,7 @@ func serverProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 	//3.将loginResMes 序列化
 	data, err := json.Marshal(loginResMes)
 	if err != nil {
-		fmt.Printf("%s jsonMarshal fail\n", helper.Line(), err)
+		fmt.Printf("%s jsonMarshal fail\n", helper.Log(), err)
 		return
 	}
 
@@ -100,7 +100,7 @@ func serverProcessLogin(conn net.Conn, mes *message.Message) (err error) {
 	//5. 对resMes 序列化，准备发送
 	data, err = json.Marshal(resMes)
 	if err != nil {
-		fmt.Printf("%s jsonMarshal fail\n", helper.Line(), err)
+		fmt.Printf("%s jsonMarshal fail\n", helper.Log(), err)
 		return
 	}
 	//6.发送data, 将其封装到writePkg函数中
@@ -120,7 +120,7 @@ func serverProcessMes(conn net.Conn, mes *message.Message) (err error) {
 		case message.RegisterMesType:
 		
 		default:
-			fmt.Printf("%s The type of message is not exist\n",helper.Line())
+			fmt.Printf("%s The type of message is not exist\n",helper.Log())
 		
 	}
 	return
@@ -138,9 +138,9 @@ func handleConnection(c net.Conn) {
 		mes, err := readPkg(c)
 		if err != nil {
 			if err == io.EOF {
-				fmt.Printf("%s 客户端退出了\n", helper.Line())
+				fmt.Printf("%s 客户端退出了\n", helper.Log())
 			}else {
-				fmt.Printf("%s readPkg err\n", helper.Line(), err)
+				fmt.Printf("%s readPkg err\n", helper.Log(), err)
 			}
 			return
 			
@@ -167,7 +167,7 @@ func main() {
 			log.Fatal(err)
 			return
 		}else{
-			fmt.Printf("%s the ip of client is:%v\n", helper.Line(), conn.RemoteAddr())
+			fmt.Printf("%s the ip of client is:%v\n", helper.Log(), conn.RemoteAddr())
 		}
 		
 		// Handle the connection in a new goroutine.
