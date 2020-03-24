@@ -21,6 +21,7 @@ func (this *Transfer) ReadPkg() (mes message.Message, err error) {
 
 	_, err = this.Conn.Read(this.Buf[:4])
 	if err != nil {
+		fmt.Printf("%s this.Conn.Read(this.Buf[:4])\n",console.Log())
 		return
 	}
 	var pkgLen uint32

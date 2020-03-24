@@ -17,7 +17,7 @@ func main() {
   for j:=1 ;j <= clas;j++ {
     sum = 0.0
     for i := 1;i <= stus;i++ {
-      fmt.Printf("please input the score of sutdent which the number %d student in class %d \n", i,j)
+      fmt.Printf("please input a score of sutdent which the number %d student in class %d \n", i,j)
       fmt.Scanf("%f", &score)
       if score >= 60 {
         pass++

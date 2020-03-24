@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"console"
 	_"errors"
+	"time"
+	"exercises/communication_system/server/models"
+	"redis"
 )
 // func readPkg(c net.Conn) (mes message.Message, err error) {
 // 	buf := make([]byte,8096)
@@ -137,9 +140,16 @@ func handleConnection(conn net.Conn) {
 		return
 	}
 }
+func init() {
+	redis.InitPool(16, 0, 300 * time.Second)
+	models.MyUserDao = models.NewUserDao(redis.GetPool())
+}
+
+
 func main() {
 	// Listen on TCP port 2000 on all available unicast and
 	// anycast IP addresses of the local system.
+	
 	l, err := net.Listen("tcp", "0.0.0.0:2000")
 	if err != nil {
 		log.Fatal(err)

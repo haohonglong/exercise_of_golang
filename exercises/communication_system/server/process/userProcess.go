@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"exercises/communication_system/common/message"
 	"exercises/communication_system/server/utils"
+	"exercises/communication_system/server/models"
 	"console"
 )
 type UserProcess struct {
@@ -26,16 +27,23 @@ func (this *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	//2.
 	var loginResMes message.LoginResMes
 	
-
-
-	//如果用户id=100，密码=123456，任务合法，否则不合法
-	if loginMes.UserId == 100 &&  loginMes.UserPwd == "123456" {//合法
-		loginResMes.Code = 200
-
+	//redis 数据库取出数据
+	user, err := models.MyUserDao.Login(loginMes.UserId, loginMes.UserPwd)
+	
+	if err != nil {
+		loginResMes.Code = 500
 	}else {
-		loginResMes.Code = 500 //500 状态码，表示该用户不存在
-		loginResMes.Error = "该用户不存在，请先注册再使用..."
+		loginResMes.Code = 200
+		fmt.Printf("%s %s登录成功\n",console.Log(), user)
 	}
+	//如果用户id=100，密码=123456，任务合法，否则不合法
+	// if loginMes.UserId == 100 &&  loginMes.UserPwd == "123456" {//合法
+	// 	loginResMes.Code = 200
+
+	// }else {
+	// 	loginResMes.Code = 500 //500 状态码，表示该用户不存在
+	// 	loginResMes.Error = "该用户不存在，请先注册再使用..."
+	// }
 
 	//3.将loginResMes 序列化
 	data, err := json.Marshal(loginResMes)
